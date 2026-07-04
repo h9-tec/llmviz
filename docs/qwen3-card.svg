@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="llmviz-8b5cf6" width="1200" height="630" viewBox="0 0 1200 630" role="img">
+<style>
+  #llmviz-8b5cf6 text { font-family: Arial, "Helvetica Neue", "Liberation Sans", "DejaVu Sans", sans-serif; fill: #000000; }
+  #llmviz-8b5cf6 .mono { font-family: "Courier New", "Liberation Mono", "DejaVu Sans Mono", monospace; }
+  #llmviz-8b5cf6 .accent { fill: #8b5cf6; }
+  #llmviz-8b5cf6 .white { fill: #ffffff; }
+  #llmviz-8b5cf6 .surface { fill: #ffffff; }
+  #llmviz-8b5cf6 .pill { fill: #ffffff; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .outer { fill: #d5d5d5; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .blockc { fill: #b192f9; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .attnbox { fill: #5e5e5e; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .inset { fill: #cccccc; stroke: #000000; stroke-width: 3; stroke-dasharray: 2 7;
+            stroke-linecap: round; }
+  #llmviz-8b5cf6 .inset-accent { fill: #ffffff; stroke: #8b5cf6; stroke-width: 3.5;
+                   stroke-dasharray: 2 8; stroke-linecap: round; }
+  #llmviz-8b5cf6 .moepill { fill: #cccccc; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .router { fill: #ffffff; stroke: #8b5cf6; stroke-width: 3.5; }
+  #llmviz-8b5cf6 .tagdark { fill: #000000; }
+  #llmviz-8b5cf6 .tagaccent { fill: #8b5cf6; }
+  #llmviz-8b5cf6 .flow { stroke: #000000; stroke-width: 2.5; fill: none; }
+  #llmviz-8b5cf6 .flowhead { fill: #000000; }
+  #llmviz-8b5cf6 .leader { stroke: #000000; stroke-width: 3; stroke-dasharray: 2 7; fill: none;
+             stroke-linecap: round; }
+  #llmviz-8b5cf6 .leader-accent { stroke: #8b5cf6; stroke-width: 4; stroke-dasharray: 2 8; fill: none;
+                    stroke-linecap: round; }
+  #llmviz-8b5cf6 .plusc { fill: #ffffff; stroke: #000000; stroke-width: 2.5; }
+  #llmviz-8b5cf6 .accent-dark { fill: #bfa5fa; }</style>
+<rect width="1200" height="630" class="surface"/>
+<g transform="translate(560, 20) scale(0.397)">
+<rect x="150" y="165" width="640" height="1086" rx="40" class="outer" />
+<line x1="470" y1="261" x2="470" y2="145" class="flow"/>
+<path d="M 476.46 145 L 470 128 L 463.54 145 Z" class="flowhead"/>
+<rect x="315" y="261" width="310" height="52" rx="14" class="pill" />
+<text x="470" y="294.92" font-size="22" class="" text-anchor="middle">Linear output layer</text>
+<rect x="340" y="401" width="260" height="50" rx="14" class="pill" />
+<text x="470" y="433.92" font-size="22" class="" text-anchor="middle">Final RMSNorm</text>
+<rect x="215" y="543" width="510" height="536" rx="34" class="blockc" />
+<circle cx="470" cy="593" r="15" class="plusc" />
+<line x1="457.25" y1="593" x2="482.75" y2="593" class="flow"/>
+<line x1="470" y1="580.25" x2="470" y2="605.75" class="flow"/>
+<rect x="365" y="629" width="210" height="48" rx="14" class="moepill" />
+<text x="470" y="660" font-size="22" class="" text-anchor="middle">MoE</text>
+<rect x="350" y="717" width="240" height="48" rx="14" class="pill" />
+<text x="470" y="748.92" font-size="22" class="" text-anchor="middle">RMSNorm 2</text>
+<circle cx="470" cy="825" r="15" class="plusc" />
+<line x1="457.25" y1="825" x2="482.75" y2="825" class="flow"/>
+<line x1="470" y1="812.25" x2="470" y2="837.75" class="flow"/>
+<rect x="315" y="857" width="310" height="96" rx="16" class="attnbox" />
+<text x="350.122" y="897" font-size="23" font-weight="400" class="white" xml:space="preserve">Masked </text>
+<text x="440.268" y="897" font-size="23" font-weight="400" class="accent-dark" xml:space="preserve">grouped-query</text>
+<text x="425.879" y="927" font-size="23" font-weight="400" class="white" xml:space="preserve">attention</text>
+<rect x="350" y="995" width="240" height="48" rx="14" class="pill" />
+<text x="470" y="1026.92" font-size="22" class="" text-anchor="middle">RMSNorm 1</text>
+<line x1="470" y1="401" x2="470" y2="333" class="flow"/>
+<path d="M 476.46 333 L 470 316 L 463.54 333 Z" class="flowhead"/>
+<line x1="470" y1="578" x2="470" y2="471" class="flow"/>
+<path d="M 476.46 471 L 470 454 L 463.54 471 Z" class="flowhead"/>
+<line x1="470" y1="629" x2="470" y2="627" class="flow"/>
+<path d="M 476.46 627 L 470 610 L 463.54 627 Z" class="flowhead"/>
+<line x1="470" y1="857" x2="470" y2="859" class="flow"/>
+<path d="M 476.46 859 L 470 842 L 463.54 859 Z" class="flowhead"/>
+<line x1="470" y1="717" x2="470" y2="697" class="flow"/>
+<path d="M 476.46 697 L 470 680 L 463.54 697 Z" class="flowhead"/>
+<line x1="470" y1="995" x2="470" y2="973" class="flow"/>
+<path d="M 476.46 973 L 470 956 L 463.54 973 Z" class="flowhead"/>
+<line x1="470" y1="810" x2="470" y2="785" class="flow"/>
+<path d="M 476.46 785 L 470 768 L 463.54 785 Z" class="flowhead"/>
+<path d="M 470.0 1063 L 665.0 1063 L 665.0 825" class="flow" />
+<line x1="665" y1="825" x2="504" y2="825" class="flow"/>
+<path d="M 504 818.54 L 487 825 L 504 831.46 Z" class="flowhead"/>
+<path d="M 470.0 787 L 665.0 787 L 665.0 593" class="flow" />
+<line x1="665" y1="593" x2="504" y2="593" class="flow"/>
+<path d="M 504 586.54 L 487 593 L 504 599.46 Z" class="flowhead"/>
+<rect x="40" y="879" width="210" height="52" rx="14" class="pill" />
+<text x="145" y="913" font-size="22" class="" text-anchor="middle">RoPE</text>
+<line x1="250" y1="905" x2="296" y2="905" class="flow"/>
+<path d="M 296 911.46 L 313 905 L 296 898.54 Z" class="flowhead"/>
+<text x="189" y="1101" font-size="140" class="" text-anchor="middle" font-weight="300">{</text>
+<text x="57" y="1067" font-size="34" font-weight="700" class="accent" xml:space="preserve">94 ×</text>
+<line x1="470" y1="1155" x2="470" y2="1063" class="flow"/>
+<path d="M 476.46 1063 L 470 1046 L 463.54 1063 Z" class="flowhead"/>
+<rect x="300" y="1155" width="340" height="52" rx="14" class="pill" />
+<text x="470" y="1188.92" font-size="22" class="" text-anchor="middle">Token embedding layer</text>
+<line x1="470" y1="1317" x2="470" y2="1228" class="flow"/>
+<path d="M 476.46 1228 L 470 1211 L 463.54 1228 Z" class="flowhead"/>
+<rect x="345" y="1317" width="250" height="50" rx="14" class="pill" />
+<text x="470" y="1349.92" font-size="22" class="" text-anchor="middle">Tokenized text</text>
+<line x1="470" y1="1429" x2="470" y2="1388" class="flow"/>
+<path d="M 476.46 1388 L 470 1371 L 463.54 1388 Z" class="flowhead"/>
+<text x="470" y="1467" font-size="24" class="mono" text-anchor="middle">Sample input text</text>
+<text x="660" y="148" font-size="21" font-weight="700" class="" xml:space="preserve">Vocabulary size of </text>
+<text x="853.171" y="148" font-size="21" font-weight="700" class="accent" xml:space="preserve">152k</text>
+<line x1="682" y1="162" x2="610" y2="258" class="leader"/>
+<text x="18" y="1145" font-size="21" font-weight="700" class="" xml:space="preserve">Supported</text>
+<text x="18" y="1175" font-size="21" font-weight="700" class="" xml:space="preserve">context length</text>
+<text x="18" y="1205" font-size="21" font-weight="700" class="" xml:space="preserve">of </text>
+<text x="46.5936" y="1205" font-size="21" font-weight="700" class="accent" xml:space="preserve">40k</text>
+<text x="84.5742" y="1205" font-size="21" font-weight="700" class="" xml:space="preserve"> tokens</text>
+<line x1="44" y1="1119" x2="58" y2="937" class="leader"/>
+<text x="800" y="1199" font-size="21" font-weight="700" class="accent" xml:space="preserve">64 </text>
+<text x="832.134" y="1199" font-size="21" font-weight="700" class="" xml:space="preserve">heads</text>
+<text x="800" y="1229" font-size="21" font-weight="700" class="accent" xml:space="preserve">4 </text>
+<text x="820.454" y="1229" font-size="21" font-weight="700" class="" xml:space="preserve">KV groups</text>
+<text x="800" y="1259" font-size="21" font-weight="700" class="" xml:space="preserve">QK-Norm on queries &amp; keys</text>
+<line x1="790" y1="1175" x2="622" y2="945" class="leader"/>
+<text x="680" y="1303" font-size="21" font-weight="700" class="" xml:space="preserve">Embedding</text>
+<text x="680" y="1333" font-size="21" font-weight="700" class="" xml:space="preserve">dimension of </text>
+<text x="819.436" y="1333" font-size="21" font-weight="700" class="accent" xml:space="preserve">4,096</text>
+<line x1="715" y1="1273" x2="646" y2="1187" class="leader"/>
+</g>
+<text x="56" y="118" font-size="52" class="accent" text-anchor="start" font-weight="800">Qwen3 MOE</text>
+<text x="56" y="186" font-size="17" class="" text-anchor="start">PARAMETERS</text>
+<text x="56" y="220" font-size="29" class="" text-anchor="start" font-weight="700">235.1B</text>
+<text x="56" y="256" font-size="17" class="" text-anchor="start">ACTIVE / TOKEN</text>
+<text x="56" y="290" font-size="29" class="" text-anchor="start" font-weight="700">22.2B</text>
+<text x="56" y="326" font-size="17" class="" text-anchor="start">LAYERS</text>
+<text x="56" y="360" font-size="29" class="" text-anchor="start" font-weight="700">94</text>
+<text x="56" y="396" font-size="17" class="" text-anchor="start">ATTENTION</text>
+<text x="56" y="430" font-size="29" class="" text-anchor="start" font-weight="700">GQA · 64 heads / 4 KV</text>
+<text x="56" y="466" font-size="17" class="" text-anchor="start">FEED-FORWARD</text>
+<text x="56" y="500" font-size="29" class="" text-anchor="start" font-weight="700">MoE · 128 experts · top-8</text>
+<text x="56" y="536" font-size="17" class="" text-anchor="start">CONTEXT</text>
+<text x="56" y="570" font-size="29" class="" text-anchor="start" font-weight="700">40k</text>
+<text x="56" y="612" font-size="15" class="" text-anchor="start">rendered by llmviz from config.json</text>
+</svg>

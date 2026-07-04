@@ -1,70 +1,96 @@
 # llmviz
 
-LLM architecture figures in the style of Sebastian Raschka's [LLM Architecture Gallery](https://sebastianraschka.com/llm-architecture-gallery/), generated from a HuggingFace `config.json` — no weights, no GPU, no `transformers` install. Bottom-up tower with nested containers, white pills, dark attention box, dotted-leader callouts carrying the key numbers, curly-brace layer repeat, FeedForward module inset, MoE layer inset with Router and expert cards, and Resource-savings bullets — parameter counts computed from the config itself. Each model family gets its own accent color, like the original figures.
+**Publication-quality LLM architecture figures from `config.json` alone — no weights, no GPU, no `transformers` install.**
 
-Hand-drawn galleries update episodically. llmviz generates the same figure in milliseconds, for any model, the day it drops.
+[![CI](https://github.com/h9-tec/llmviz/actions/workflows/ci.yml/badge.svg)](https://github.com/h9-tec/llmviz/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/llmviz)](https://pypi.org/project/llmviz/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://pypi.org/project/llmviz/)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+
+Point it at any model — a Hugging Face id, a local GGUF file, or a model installed in Ollama — and get a hand-drawn-quality architecture figure in the visual language of Sebastian Raschka's [LLM Architecture Gallery](https://sebastianraschka.com/llm-architecture-gallery/): the decoder tower with dotted-leader callouts, the MoE router inset, the SwiGLU module, and parameter counts **computed from the config**, not scraped from a model card.
 
 ![DeepSeek-V3 architecture](docs/deepseek-v3.svg)
+
+## Why
+
+Hand-drawn galleries are wonderful and update episodically. llmviz generates the same figure in milliseconds, for any model, the day its config lands on the Hub — including architectures that didn't exist when this tool was written. The parser is generic-first (field-name synonyms, capability detection, graceful degradation), so hybrid Mamba mixers, linear attention, MLA, sandwich norms, and whatever ships next all render correctly or degrade honestly.
+
+The numbers are the point: total and active parameters, KV-cache bytes per token, and VRAM footprints are reconstructed from per-layer math. The test suite pins them against published figures — Llama-3-8B at 8.03B, DeepSeek-V3 at 671B/37.5B, Qwen3-235B-A22B at 235B/22B — within 0.5–3%. When Kimi-Linear-48B-A3B (a model the code was never tuned for) parses to 48.9B total / 3.3B active, you know the math is doing the work.
 
 ## Install
 
 ```bash
-pip install llmviz            # SVG output
-pip install "llmviz[png]"     # + PNG export via cairosvg
+pip install llmviz                # SVG figures
+pip install "llmviz[png]"         # + PNG export (cairosvg)
+pip install "llmviz[explain]"     # + LLM-written notes (LiteLLM: Ollama, llama.cpp, any provider)
+pip install "llmviz[mcp]"         # + MCP server for agents
 ```
 
-## Use
+## Sixty seconds
 
 ```bash
-llmviz render deepseek-ai/DeepSeek-V3          # → DeepSeek-V3.svg
-llmviz render Qwen/Qwen3-0.6B -o qwen.png      # PNG export
-llmviz render ./config.json                    # local config file works too
-
-llmviz diff deepseek-ai/DeepSeek-V3 NousResearch/Meta-Llama-3-8B   # side-by-side, differences flagged
-
-llmviz gallery examples/models.yaml -o site/   # static HTML gallery with search + sort
-
-llmviz inspect openai/gpt-oss-20b              # fact sheet as a terminal table
-
-llmviz card deepseek-ai/DeepSeek-V3            # 1200x630 social card (PNG)
-llmviz lineage meta-llama/Llama-2-7b-hf NousResearch/Meta-Llama-3-8B \
-    -o evolution.svg                           # family evolution strip, changes flagged
-llmviz watch --n 12 -o site/                   # gallery of the Hub's trending models right now
-llmviz gallery models.yaml --space user/name   # deploy the gallery to a free HF Space
-llmviz render Qwen/Qwen3-0.6B --animate        # staggered build-up animation (SVG)
-
-llmviz render ollama:deepseek-r1               # your LOCAL models — GGUF metadata, no weights read
-llmviz inspect ./model-q4.gguf                 # any .gguf file or remote GGUF URL (ranged fetch)
-llmviz fit Qwen/Qwen3-235B-A22B -c 131072      # can I run it? fp16/q8/q4 VRAM + your GPU verdict
-llmviz poster models.yaml --cols 6             # print-ready poster grid of towers
-llmviz mcp                                     # MCP server: inspect/fit/render/diff as agent tools
-llmviz explain zai-org/GLM-4.5-Air             # 5 LLM-written notes (local Ollama by default)
-llmviz explain <model> --llm openai/local --api-base http://localhost:8080/v1   # llama.cpp
+llmviz render deepseek-ai/DeepSeek-V3            # the figure above → DeepSeek-V3.svg
+llmviz render ollama:deepseek-r1                 # a model installed in YOUR Ollama
+llmviz inspect ./model-q4.gguf                   # any local or remote .gguf (header-only read)
+llmviz fit Qwen/Qwen3-235B-A22B -c 131072        # can I run it? fp16/q8/q4 + your GPU verdict
+llmviz diff deepseek-ai/DeepSeek-V3 NousResearch/Meta-Llama-3-8B
 ```
 
-`watch` + `--space` on a cron is a self-updating public architecture gallery: every trending
-model on the Hub, rendered the day it appears. `explain` needs `pip install llmviz[explain]` (LiteLLM) and defaults to local Ollama
-(`ollama/llama3.2`, override with `--llm` or `LLMVIZ_LLM`) — any LiteLLM provider string works:
-llama.cpp's OpenAI-compatible server, Groq, Gemini, Azure OpenAI, OpenRouter, Anthropic. Figures also include a KV-cache footprint table (per token and
-at full context, fp16/fp8) computed from the same math as the parameter counts.
+## Commands
 
-Gated repos (meta-llama, google) need `--token` or `hf auth login`; community mirrors usually host the identical config.
+| Command | What it produces |
+|---|---|
+| `render <model>` | The architecture figure (SVG/PNG). `--animate` adds a staggered build-up. |
+| `diff <a> <b>` | Two towers side by side + a comparison table with every difference flagged |
+| `lineage <m1> <m2> …` | Family evolution strip with per-generation "what changed" deltas |
+| `card <model>` | 1200×630 social card — headline stats + the tower, share-ready |
+| `poster models.yaml` | Print-ready grid of towers on one sheet (`--cols`, `--title`) |
+| `gallery models.yaml` | Self-contained static HTML gallery with search/sort. `--space user/name` deploys it to a free HF Space |
+| `watch` | Gallery of the Hub's **trending** models right now — pair with `--space` on a cron for a self-updating public gallery |
+| `inspect <model>` | The normalized fact sheet as a terminal table |
+| `fit <model>` | Quantization-aware memory needs (weights + KV cache) and which GPUs fit — detects your local GPU via `nvidia-smi` |
+| `explain <model>` | Five LLM-written notes on what's architecturally notable — local-first via Ollama |
+| `mcp` | MCP server (stdio): `inspect_architecture`, `memory_to_run`, `render_architecture_figure`, `diff_architectures` as agent tools |
+
+Every command accepts a Hugging Face id (`org/name`), a local `config.json` path, a `.gguf` file or URL, or `ollama:<name>`. Gated repos (meta-llama, google) need `--token` or `hf auth login`.
 
 ![DeepSeek-V3 vs Llama-3-8B](docs/deepseek-v3-vs-llama-3-8b.svg)
 
-## What it reads from config.json
+## What it reads
 
-| Signal | Fields |
+| Signal | Source fields |
 |---|---|
-| MHA / GQA / MQA | `num_key_value_heads` vs `num_attention_heads` |
-| MLA (DeepSeek) | `kv_lora_rank`, `q_lora_rank`, decoupled RoPE head dims |
-| MoE | `num_experts`/`n_routed_experts`, `num_experts_per_tok`, shared experts, leading dense layers |
-| Sliding window | `sliding_window`, `sliding_window_pattern`, `layer_types` (local:global ratios) |
-| The rest | norm type, QK-norm, RoPE θ, tied embeddings, activation, context, vocab |
+| MHA / GQA / MQA | `num_key_value_heads` vs `num_attention_heads`, `multi_query` |
+| MLA (DeepSeek-style latent KV) | `kv_lora_rank`, `q_lora_rank`, decoupled-RoPE head dims |
+| MoE | `num_experts` / `n_routed_experts` / `num_local_experts`, five spellings of top-k, shared experts, leading dense layers |
+| Hybrid token mixers | `layer_types`, `linear_attn_config`, `full_attn_idxs`, `attn_type_list`, `mamba_*` — summarized as e.g. "20 linear-attention (KDA) : 7 full attention layers" |
+| Norm placement | pre (default), post (OLMo-2), sandwich (Gemma) — drawn structurally |
+| The rest | sliding windows and local:global ratios, QK-norm, RoPE θ / ALiBi / learned, tied embeddings, activation |
 
-Parameter counts (total and active-per-token for MoE) are reconstructed from the per-layer math, not scraped from model cards. The test suite asserts them against published figures: GPT-2 124M, Llama-3-8B 8.03B, Qwen3-235B-A22B 235B/22B, DeepSeek-V3 671B/37.5B — all within 0.5–3%. KV-cache bytes per token come from the same math.
+GGUF sources are read **header-only** (a few MB, never the weights), including vocab size recovered from the tokenizer array length — so `llmviz render ollama:qwen2.5-coder:14b` diagrams a 9 GB model in under a second. For remote GGUF URLs only the metadata bytes are fetched via ranged HTTP.
 
-Counting convention: "active" means every parameter touched in a forward pass, including embeddings and the LM head. OpenAI reports gpt-oss-20b as 3.61B active by excluding the unembedding; llmviz reports 4.19B.
+Counting convention: "active" means every parameter touched in a forward pass, including embeddings and the LM head — some vendors report actives excluding the unembedding, so their number may read slightly lower.
+
+## `explain` providers
+
+`explain` is local-first through LiteLLM:
+
+```bash
+llmviz explain zai-org/GLM-4.5-Air                                    # local Ollama (auto-picks an installed model)
+llmviz explain <m> --llm openai/local --api-base http://localhost:8080/v1   # llama.cpp server
+llmviz explain <m> --llm groq/llama-3.3-70b-versatile                 # any hosted LiteLLM provider
+export LLMVIZ_LLM="ollama/deepseek-r1:latest"                         # set your default
+```
+
+Reasoning models (DeepSeek-R1, Qwen3) are handled — thinking is stripped, the answer is kept.
+
+## MCP
+
+Give any agent architecture facts computed from configs instead of recalled from training data:
+
+```json
+{"mcpServers": {"llmviz": {"command": "llmviz", "args": ["mcp"]}}}
+```
 
 ## Python API
 
@@ -72,25 +98,28 @@ Counting convention: "active" means every parameter touched in a forward pass, i
 from llmviz.fetch import load_spec
 from llmviz.render.block import render_model
 
-spec = load_spec("Qwen/Qwen3-235B-A22B")
-print(spec.total_params, spec.active_params, spec.attention.kind)
-svg = render_model(spec)  # accent auto-assigned per family
+spec = load_spec("Qwen/Qwen3-235B-A22B")      # or "ollama:deepseek-r1", "./model.gguf"
+spec.total_params, spec.active_params, spec.attention.kind, spec.hybrid_note
+svg = render_model(spec)
 ```
 
-`ArchSpec` is a Pydantic model, so `spec.model_dump_json()` gives you the normalized architecture as JSON for your own tooling.
-
-## Any architecture, including tomorrow's
-
-The parser is generic-first: wide field-name synonym coverage (`hidden_size`/`d_model`/`n_embd`, `num_experts`/`n_routed_experts`/`num_local_experts`, five spellings of top-k, …), capability detection instead of per-model code, and graceful degradation (missing vocab/context just drops that callout — it never crashes). Verified against a zoo that includes Kimi Linear (MLA + KDA hybrid + MoE), Qwen3-Next (gated-deltanet hybrid), Granite 4 (Mamba-2 hybrid), LFM2 (conv mixer), MiniMax-M1 (lightning attention), Falcon (`multi_query`/`alibi`/`parallel_attn`), OLMo 2 (post-norm), and Gemma (sandwich norm). Hybrid token mixers are summarized in a callout ("20 linear-attention (KDA) : 7 full attention layers") whichever of the five encodings the config uses.
-
-Remaining limits: decoder-only LMs (encoder-decoder is out of scope), multimodal models render their text tower, and quirks invisible in `config.json` (QK-norm, default-tied embeddings, norm placement) live in a small per-family table that may need one line for a brand-new family.
+`ArchSpec` is a Pydantic model — `spec.model_dump_json()` gives you the normalized architecture for your own tooling.
 
 ## Development
 
 ```bash
+git clone https://github.com/h9-tec/llmviz && cd llmviz
 python -m venv .venv && .venv/bin/pip install -e ".[dev,png]"
-.venv/bin/pytest          # offline; fixtures are real Hub configs
-.venv/bin/ruff check src tests && .venv/bin/black --check src tests
+.venv/bin/pytest                              # offline; fixtures are real Hub configs
+.venv/bin/ruff check src tests
 ```
 
-Apache-2.0.
+Tests treat published parameter counts as ground truth — if the per-layer math doesn't reproduce a model's documented size, the parser is wrong. CI runs on 3.11/3.12; a nightly workflow rebuilds the trending gallery and deploys it to a Hugging Face Space; tagging `v*` publishes to PyPI via trusted publishing.
+
+## Acknowledgements
+
+The visual language is a faithful implementation of **Sebastian Raschka's** LLM Architecture Gallery figures ([sebastianraschka.com/llm-architecture-gallery](https://sebastianraschka.com/llm-architecture-gallery/)) — colors were sampled from his published figures with admiration. If you want the hand-crafted originals with his commentary, go read [Ahead of AI](https://magazine.sebastianraschka.com/).
+
+## License
+
+Apache-2.0
