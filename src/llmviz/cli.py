@@ -138,6 +138,14 @@ def gallery(
 
 
 @app.command()
+def mcp():
+    """Run llmviz as an MCP server (stdio) — inspect/fit/render/diff as agent tools."""
+    from llmviz.mcp_server import serve
+
+    serve()
+
+
+@app.command()
 def fit(
     model: str,
     context: int | None = typer.Option(None, "--context", "-c", help="Context length for KV cache (default min(model max, 32k))"),
