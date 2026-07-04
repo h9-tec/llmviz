@@ -32,6 +32,12 @@ llmviz lineage meta-llama/Llama-2-7b-hf NousResearch/Meta-Llama-3-8B \
 llmviz watch --n 12 -o site/                   # gallery of the Hub's trending models right now
 llmviz gallery models.yaml --space user/name   # deploy the gallery to a free HF Space
 llmviz render Qwen/Qwen3-0.6B --animate        # staggered build-up animation (SVG)
+
+llmviz render ollama:deepseek-r1               # your LOCAL models — GGUF metadata, no weights read
+llmviz inspect ./model-q4.gguf                 # any .gguf file or remote GGUF URL (ranged fetch)
+llmviz fit Qwen/Qwen3-235B-A22B -c 131072      # can I run it? fp16/q8/q4 VRAM + your GPU verdict
+llmviz poster models.yaml --cols 6             # print-ready poster grid of towers
+llmviz mcp                                     # MCP server: inspect/fit/render/diff as agent tools
 llmviz explain zai-org/GLM-4.5-Air             # 5 LLM-written notes (local Ollama by default)
 llmviz explain <model> --llm openai/local --api-base http://localhost:8080/v1   # llama.cpp
 ```

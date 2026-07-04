@@ -138,6 +138,25 @@ def gallery(
 
 
 @app.command()
+def poster(
+    models_file: Path = typer.Argument(help="YAML file: a list of model ids"),
+    out: Path | None = typer.Option(None, "--out", "-o"),
+    cols: int = typer.Option(4, "--cols"),
+    title: str = typer.Option("LLM Architecture Gallery", "--title"),
+    token: str | None = Token,
+):
+    """Print-ready poster: a grid of architecture towers on one sheet."""
+    import yaml
+
+    from llmviz.fetch import load_spec
+    from llmviz.render.poster import render_poster
+
+    ids = yaml.safe_load(models_file.read_text())
+    specs = [load_spec(str(m), token=token) for m in ids]
+    _write(render_poster(specs, title=title, cols=cols), out or Path("poster.svg"))
+
+
+@app.command()
 def mcp():
     """Run llmviz as an MCP server (stdio) — inspect/fit/render/diff as agent tools."""
     from llmviz.mcp_server import serve
@@ -148,7 +167,9 @@ def mcp():
 @app.command()
 def fit(
     model: str,
-    context: int | None = typer.Option(None, "--context", "-c", help="Context length for KV cache (default min(model max, 32k))"),
+    context: int | None = typer.Option(
+        None, "--context", "-c", help="Context length for KV cache (default min(model max, 32k))"
+    ),
     token: str | None = Token,
 ):
     """Can I run it? Quantization-aware memory needs and which GPUs fit."""
@@ -165,9 +186,16 @@ def fit(
         t.add_column(col)
     gpu = local_vram_gb()
     for r in rows:
-        fits = ", ".join(g.split()[0] + " " + g.split()[-1] for g in r["fits"][:3]) or "multi-GPU only"
-        t.add_row(r["quant"], f"{r['weights_gb']:.1f} GB", f"{r['kv_gb']:.1f} GB",
-                  f"{r['total_gb']:.1f} GB", fits)
+        fits = (
+            ", ".join(g.split()[0] + " " + g.split()[-1] for g in r["fits"][:3]) or "multi-GPU only"
+        )
+        t.add_row(
+            r["quant"],
+            f"{r['weights_gb']:.1f} GB",
+            f"{r['kv_gb']:.1f} GB",
+            f"{r['total_gb']:.1f} GB",
+            fits,
+        )
     Console().print(t)
     if gpu:
         name, vram = gpu
@@ -179,8 +207,10 @@ def fit(
         )
         Console().print(f"Your GPU ({name.strip()}, {vram:.0f} GB): {verdict}")
     if spec.is_moe:
-        Console().print("MoE: all experts must be resident — totals use all "
-                        f"{spec.moe.num_experts} experts, not the active subset.")
+        Console().print(
+            "MoE: all experts must be resident — totals use all "
+            f"{spec.moe.num_experts} experts, not the active subset."
+        )
 
 
 @app.command()

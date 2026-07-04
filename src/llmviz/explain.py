@@ -34,6 +34,7 @@ def _pick_local_ollama(default: str) -> str:
     print(f"note: {want} not pulled — using local model {pick}")
     return f"ollama/{pick}"
 
+
 _PROMPT = """You are an expert on LLM architectures, writing in the style of Sebastian Raschka's
 'The Big LLM Architecture Comparison'. Below is a normalized architecture spec parsed from a
 model's config.json. Write exactly 5 concise bullets (one line each, plain text, no markdown

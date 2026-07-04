@@ -161,7 +161,9 @@ def gguf_to_config(meta: dict) -> dict:
         "n_shared_experts": g("expert_shared_count"),
         "sliding_window": g("sliding_window", "attention.sliding_window"),
         # GGUF doesn't store the activation; every modern family here is gated SwiGLU
-        "hidden_act": "gelu" if a in ("gpt2", "gptj", "gpt_neox", "falcon", "starcoder") else "silu",
+        "hidden_act": (
+            "gelu" if a in ("gpt2", "gptj", "gpt_neox", "falcon", "starcoder") else "silu"
+        ),
     }
     # head_count can be a per-layer list (hybrid models) — use the max (full-attn layers)
     for k in ("num_attention_heads", "num_key_value_heads"):
