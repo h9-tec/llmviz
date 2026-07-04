@@ -146,3 +146,43 @@ def test_kimi_linear_params_match_name():
     k = load("kimi_linear")
     assert approx(k.total_params, 48_000_000_000, 0.05)
     assert approx(k.active_params, 3_300_000_000, 0.15)
+
+
+def test_gguf_ollama_roundtrip():
+    """Synthetic GGUF: header + the metadata keys our reader maps."""
+    import struct
+
+    from llmviz.gguf import gguf_to_config, parse_gguf_metadata
+
+    def kv_str(key, val):
+        k, v = key.encode(), val.encode()
+        return struct.pack("<Q", len(k)) + k + struct.pack("<I", 8) + struct.pack("<Q", len(v)) + v
+
+    def kv_u32(key, val):
+        k = key.encode()
+        return struct.pack("<Q", len(k)) + k + struct.pack("<I", 4) + struct.pack("<I", val)
+
+    def kv_f32(key, val):
+        k = key.encode()
+        return struct.pack("<Q", len(k)) + k + struct.pack("<I", 6) + struct.pack("<f", val)
+
+    kvs = [
+        kv_str("general.architecture", "llama"),
+        kv_str("general.name", "Tiny Test"),
+        kv_u32("llama.block_count", 4),
+        kv_u32("llama.embedding_length", 64),
+        kv_u32("llama.attention.head_count", 8),
+        kv_u32("llama.attention.head_count_kv", 2),
+        kv_u32("llama.feed_forward_length", 256),
+        kv_u32("llama.context_length", 2048),
+        kv_f32("llama.rope.freq_base", 10000.0),
+        kv_u32("llama.vocab_size", 1000),
+    ]
+    blob = b"GGUF" + struct.pack("<I", 3) + struct.pack("<Q", 0) + struct.pack("<Q", len(kvs))
+    blob += b"".join(kvs)
+
+    cfg = gguf_to_config(parse_gguf_metadata(blob))
+    spec = parse_config(cfg, name="tiny")
+    assert spec.num_layers == 4 and spec.attention.kind == AttentionKind.GQA
+    assert spec.attention.num_kv_heads == 2 and spec.vocab_size == 1000
+    assert spec.positional == "rope" and spec.activation == "silu"

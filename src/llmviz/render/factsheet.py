@@ -16,7 +16,7 @@ def stat_tiles(s: ArchSpec) -> list[tuple[str, str, str | None]]:
         ("ACTIVE / TOKEN", fmt_params(s.active_params) if s.is_moe else "= total", None),
         ("LAYERS", str(s.num_layers), None),
         ("CONTEXT", fmt_count(s.context_length), None),
-        ("VOCAB", f"{s.vocab_size:,}", None),
+        ("VOCAB", f"{s.vocab_size:,}" if s.vocab_size else "—", None),
         ("KV CACHE / TOKEN", _kv_human(s.kv_cache_per_token_bytes), None),
     ]
 

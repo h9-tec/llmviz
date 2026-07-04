@@ -9,6 +9,11 @@ from llmviz.spec import ArchSpec, parse_config
 
 
 def load_spec(source: str, token: str | None = None) -> ArchSpec:
+    if source.startswith("ollama:") or source.endswith(".gguf"):
+        from llmviz.gguf import load_gguf_config
+
+        cfg, name = load_gguf_config(source)
+        return parse_config(cfg, name=name)
     path = Path(source)
     if path.is_file():
         cfg = json.loads(path.read_text())
