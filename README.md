@@ -9,7 +9,7 @@
 
 Point it at any model — a Hugging Face id, a local GGUF file, or a model installed in Ollama — and get a hand-drawn-quality architecture figure in the visual language of Sebastian Raschka's [LLM Architecture Gallery](https://sebastianraschka.com/llm-architecture-gallery/): the decoder tower with dotted-leader callouts, the MoE router inset, the SwiGLU module, and parameter counts **computed from the config**, not scraped from a model card.
 
-![DeepSeek-V3 architecture](docs/deepseek-v3.svg)
+![DeepSeek-V3 architecture](https://raw.githubusercontent.com/h9-tec/llmviz/main/docs/deepseek-v3.svg)
 
 ## Why
 
@@ -54,7 +54,7 @@ llmviz diff deepseek-ai/DeepSeek-V3 NousResearch/Meta-Llama-3-8B
 
 Every command accepts a Hugging Face id (`org/name`), a local `config.json` path, a `.gguf` file or URL, or `ollama:<name>`. Gated repos (meta-llama, google) need `--token` or `hf auth login`.
 
-![DeepSeek-V3 vs Llama-3-8B](docs/deepseek-v3-vs-llama-3-8b.svg)
+![DeepSeek-V3 vs Llama-3-8B](https://raw.githubusercontent.com/h9-tec/llmviz/main/docs/deepseek-v3-vs-llama-3-8b.svg)
 
 ## What it reads
 
