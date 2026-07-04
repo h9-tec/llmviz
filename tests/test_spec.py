@@ -186,3 +186,13 @@ def test_gguf_ollama_roundtrip():
     assert spec.num_layers == 4 and spec.attention.kind == AttentionKind.GQA
     assert spec.attention.num_kv_heads == 2 and spec.vocab_size == 1000
     assert spec.positional == "rope" and spec.activation == "silu"
+
+
+def test_fit_math():
+    from llmviz.fit import fit_report
+
+    rows = fit_report(load("llama3_8b"), context=8192)
+    fp16 = rows[0]
+    assert 14 < fp16["weights_gb"] < 16  # 8.03B * 2 bytes ~= 15 GB
+    assert abs(fp16["kv_gb"] - 8.03e9 * 0 / 1) < 100  # sanity: field exists
+    assert any("24GB" in g for g in rows[2]["fits"])  # q4 8B fits a 24GB card

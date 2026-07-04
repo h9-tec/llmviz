@@ -138,6 +138,44 @@ def gallery(
 
 
 @app.command()
+def fit(
+    model: str,
+    context: int | None = typer.Option(None, "--context", "-c", help="Context length for KV cache (default min(model max, 32k))"),
+    token: str | None = Token,
+):
+    """Can I run it? Quantization-aware memory needs and which GPUs fit."""
+    from rich.console import Console
+    from rich.table import Table
+
+    from llmviz.fetch import load_spec
+    from llmviz.fit import fit_report, local_vram_gb
+
+    spec = load_spec(model, token=token)
+    rows = fit_report(spec, context)
+    t = Table(title=f"{spec.name} — memory to run ({rows[0]['context']:,} ctx)")
+    for col in ("Quant", "Weights", "KV cache", "Total", "Fits on"):
+        t.add_column(col)
+    gpu = local_vram_gb()
+    for r in rows:
+        fits = ", ".join(g.split()[0] + " " + g.split()[-1] for g in r["fits"][:3]) or "multi-GPU only"
+        t.add_row(r["quant"], f"{r['weights_gb']:.1f} GB", f"{r['kv_gb']:.1f} GB",
+                  f"{r['total_gb']:.1f} GB", fits)
+    Console().print(t)
+    if gpu:
+        name, vram = gpu
+        ok = [r["quant"] for r in rows if r["total_gb"] <= vram]
+        verdict = (
+            f"fits at {', '.join(ok)}"
+            if ok
+            else "does not fit fully in VRAM — Ollama/llama.cpp will offload layers to CPU (slower)"
+        )
+        Console().print(f"Your GPU ({name.strip()}, {vram:.0f} GB): {verdict}")
+    if spec.is_moe:
+        Console().print("MoE: all experts must be resident — totals use all "
+                        f"{spec.moe.num_experts} experts, not the active subset.")
+
+
+@app.command()
 def explain(
     model: str,
     llm: str | None = typer.Option(
