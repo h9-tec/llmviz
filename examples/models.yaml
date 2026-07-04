@@ -1,0 +1,9 @@
+# Public repos only — gated models (meta-llama, google) need --token
+- openai-community/gpt2
+- mistralai/Mistral-7B-v0.1
+- NousResearch/Meta-Llama-3-8B
+- Qwen/Qwen3-0.6B
+- Qwen/Qwen3-235B-A22B
+- deepseek-ai/DeepSeek-V3
+- openai/gpt-oss-20b
+- unsloth/gemma-3-4b-it

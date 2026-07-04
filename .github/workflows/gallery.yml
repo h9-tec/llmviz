@@ -1,0 +1,16 @@
+name: Trending gallery
+on:
+  schedule:
+    - cron: "0 5 * * *"   # nightly
+  workflow_dispatch:
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e .
+      - run: llmviz watch --n 20 -o gallery --space ${{ vars.GALLERY_SPACE }}
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}

@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llmviz"
+version = "0.1.0"
+description = "Publication-quality LLM architecture diagrams, fact sheets, and diffs from HuggingFace config.json — no weights needed"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "Hesham Haroon", email = "heshamharoon19@gmail.com" }]
+keywords = ["llm", "transformer", "architecture", "visualization", "svg", "huggingface"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+  "huggingface_hub>=0.23",
+  "pydantic>=2.5",
+  "typer>=0.12",
+  "rich>=13.0",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+png = ["cairosvg>=2.7"]
+explain = ["litellm>=1.40"]
+dev = ["pytest>=8.0", "ruff>=0.4", "black>=24.0"]
+
+[project.scripts]
+llmviz = "llmviz.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/h9-tec/llmviz"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llmviz"]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]  # long lines only occur in SVG/HTML template literals; black formats code
+
+[tool.ruff.lint.per-file-ignores]
+"src/llmviz/cli.py" = ["B008"]  # typer.Option in defaults is the typer idiom
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
